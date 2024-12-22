@@ -11,70 +11,47 @@ import java.util.Arrays;
 public class Switch {
 
 	public static void main(String[] args) {
-		// Declaring elementary bricks
-		PinSensor button = new PinSensor();
-		button.setName("button");
-		button.setPin(9);
-
-		PinActuator led = new PinActuator();
-		led.setName("LED");
-		led.setPin(12);
-
-		BusActuator lcd = new BusActuator();
-		lcd.setName("lcd");
-
-		lcd.setAddress(new int[]{2, 3, 4, 5, 6, 7, 8});
-
-		// Declaring states
-		State on = new State();
-		on.setName("on");
-
-		State off = new State();
-		off.setName("off");
-
-		// Creating actions
-		Action switchTheLightOn = new Action();
-		switchTheLightOn.setActuator(led);
-		switchTheLightOn.setValue(SIGNAL.HIGH);
-
-		Action switchTheLightOff = new Action();
-		switchTheLightOff.setActuator(lcd);
-		switchTheLightOff.setValue(SIGNAL.LOW);
-
-		// Binding actions to states
-		on.setActions(Arrays.asList(switchTheLightOn));
-		off.setActions(Arrays.asList(switchTheLightOff));
-
-		// Creating transitions
-		Transition on2off = new Transition();
-		on2off.setNext(off);
-		SignalCondition on2offCondition = new SignalCondition();
-		on2offCondition.setSensor(button);
-		on2offCondition.setValue(SIGNAL.HIGH);
-		on2off.setCondition(on2offCondition);
+		//Declaring Ressources
+		Video videoA = new Video();
+		videoA.setName("VideoA");
+		videoA.setPath("videoA.mp4");
+		videoA.setDuration(10);
+		Video videoB = new Video();
+		videoB.setName("VideoB");
+		videoB.setPath("videoB.mp4");
+		videoB.setDuration(10);
+		Video videoD = new Video();
+		videoD.setName("VideoD");
+		videoD.setPath("videoD.mp4");
+		videoD.setDuration(10);
 
 
-		Transition off2on = new Transition();
-		off2on.setNext(on);
-		SignalCondition off2onCondition = new SignalCondition();
-		off2onCondition.setSensor(button);
-		off2onCondition.setValue(SIGNAL.HIGH);
-		SignalCondition off2onCondition2 = new SignalCondition();
-		off2onCondition2.setSensor(button);
-		off2onCondition2.setValue(SIGNAL.HIGH);
-		
-		CompositeCondition compositeCondition = new CompositeCondition(Operator.AND, off2onCondition2, off2onCondition);
-		off2on.setCondition(compositeCondition);
-		// Binding transitions to states
-		on.setTransition(on2off);
-		off.setTransition(off2on);
+		//Declaring Actions
+		After after = new After();
+		after.setName("VideoC");
+		after.setSource(videoA);
+		after.setTarget(videoB);
+
+		After after2 = new After();
+		after2.setName("videoE");
+		Ressource vid = after.execute();
+		System.out.println(vid.getName());
+		System.out.println(vid instanceof Ressource);
+		after2.setSource(vid);
+		System.out.println(after2.getSource().getName());
+		after2.setTarget(videoD);
+
+
+
+
+
+
 
 		// Building the App
 		App theSwitch = new App();
 		theSwitch.setName("Switch!");
-		theSwitch.setBricks(Arrays.asList(button, led, lcd ));
-		theSwitch.setStates(Arrays.asList(on, off));
-		theSwitch.setInitial(off);
+		theSwitch.setRessources(Arrays.asList(videoA, videoB, videoD));
+		theSwitch.setActions(Arrays.asList(after, after2));
 
 		// Generating Code
 		Visitor codeGenerator = new ToWiring();

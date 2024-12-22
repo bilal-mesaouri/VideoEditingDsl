@@ -11,26 +11,15 @@ public abstract class Visitor<T> {
 
 	public abstract void visit(App app);
 
-	public abstract void visit(State state);
-	public abstract void visit(SignalCondition condition);
-	public abstract void visit(TimeCondition condition);
-	public abstract void visit(CompositeCondition compositeCondition);
-	public abstract void visit(Action action);
+	public abstract void visit(Cut cut);
 
-	public abstract void visit(PinActuator pinActuator);
-	public abstract void visit(PinSensor pinSensor);
+	public abstract void visit(After after);
 
-	public abstract void visit(BusActuator busActuator);
-
-	public abstract void visit(SerialAction action);
-
-	public abstract void visit(SerialBrick serialbrick);
-
-
-
+	public abstract void visit(Text text);
 	
-	public abstract void visit(Transition sensor);
-	public abstract void visit(Condition condition);
+	public abstract void visit(TextVideo textVideo);
+	public abstract void visit(Video Video);
+
 
 	/***********************
 	 ** Helper mechanisms **
@@ -44,6 +33,5 @@ public abstract class Visitor<T> {
 		return result;
 	}
 
-	public abstract void visit(RemoteCondition condition);
 }
 

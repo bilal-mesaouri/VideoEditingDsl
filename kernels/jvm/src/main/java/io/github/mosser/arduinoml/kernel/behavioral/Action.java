@@ -1,42 +1,18 @@
 package io.github.mosser.arduinoml.kernel.behavioral;
 
 import io.github.mosser.arduinoml.kernel.generator.Visitable;
-import io.github.mosser.arduinoml.kernel.generator.Visitor;
-import io.github.mosser.arduinoml.kernel.structural.Actuator;
-import io.github.mosser.arduinoml.kernel.structural.SIGNAL;
+import io.github.mosser.arduinoml.kernel.structural.Ressource;
 
 
-public class Action implements Visitable {
+public abstract class Action implements Visitable {
+	private String name;
 
-	private SIGNAL value;
-	private Actuator actuator;
-	private String  message;
-
-	public String getMessage() {
-		return message;
-	}
-	public void setMessage(String message) {
-		this.message = message;
+	public String getName() {
+		return name;
 	}
 
-	public SIGNAL getValue() {
-		return value;
+	public void setName(String name) {
+		this.name = name;
 	}
-
-	public void setValue(SIGNAL value) {
-		this.value = value;
-	}
-
-	public Actuator getActuator() {
-		return actuator;
-	}
-
-	public void setActuator(Actuator actuator) {
-		this.actuator = actuator;
-	}
-
-	@Override
-	public void accept(Visitor visitor) {
-		visitor.visit(this);
-	}
+	public abstract Ressource execute();
 }

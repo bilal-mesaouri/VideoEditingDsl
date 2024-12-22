@@ -1,14 +1,8 @@
-pinSensor "buttonA" onPin 9
-pinSensor "buttonB" onPin 10
-actuator "led" pin 12
+video "videoA" path "videoA.mp4" duration 10
+video "videoB" path "videoB.mp4" duration 10
 
+after "videoC" firstVideo videoA secondVideo videoB
 
-state "on" means "led" becomes "high"
-state "off" means "led" becomes "low"
-
-initial "off"
-
-from "on" to "off" when "buttonA" becomes "high" and "buttonB" becomes "high"
-from off to on when buttonA becomes low or buttonB becomes low
+after "videoD" firstVideo videoC secondVideo videoA
 
 export "Switch!"
