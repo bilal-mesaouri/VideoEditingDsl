@@ -58,13 +58,15 @@ public class GroovuinoMLModel {
 		superpose.setName(name);
 
 		if (video instanceof Video) {
-			superpose.setVideo((Video) video);
+			superpose.setSource((Video) video);
+		} else if (video instanceof Action) {
+			superpose.setSource(((Action) video).execute());
 		} else {
 			throw new IllegalArgumentException("First argument must be a Video");
 		}
 
 		if (text instanceof Text) {
-			superpose.setText((Text) text);
+			superpose.setTarget((Text) text);
 		} else {
 			throw new IllegalArgumentException("Second argument must be a Text");
 		}

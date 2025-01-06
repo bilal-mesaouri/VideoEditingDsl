@@ -128,8 +128,8 @@ public class ToWiring extends Visitor<StringBuffer> {
 		w(String.format(Locale.US,
 				"%s = CompositeVideoClip([%s, %s.set_start(%.1f).set_duration(%.1f)]).set_fps(24)\n",  // Ajout du fps
 				superpose.getName(),
-				superpose.getVideo().getName(),
-				superpose.getText().getName(),
+				superpose.getSource().getName(),
+				superpose.getTarget().getName(),
 				superpose.getStartTime(),
 				superpose.getDuration()
 		));
