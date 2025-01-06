@@ -81,6 +81,8 @@ export "Switch!"
     * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\Switch.groovy`
     * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\dualCheckAlarm.groovy`
     * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\AudioSyncTest.groovy`
+    * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\holidayVideo.groovy`
+    * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\testsuperpose.groovy`
   * ... it is also possible to use the .bat files build.bat and run.bat (Windows)
 
 
