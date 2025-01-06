@@ -77,9 +77,12 @@ abstract class GroovuinoMLBasescript extends Script {
 	def text(String name) {
 		[content: { content ->
 			[font: { font ->
-				[position: { x, y ->
-					((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel()
-							.createText(name, content, font, x, y)
+				[positionX: { x->
+					[positionY: {y->
+						((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel()
+								.createText(name, content, font, x, y)
+						}
+					]
 				}]
 			}]
 		}]
@@ -109,11 +112,17 @@ abstract class GroovuinoMLBasescript extends Script {
 		[content: { content ->
 			[backgroundColor: { backgroundColor ->
 				[textColor: { textColor ->
-					[size: { width, height ->
-						[duration: { duration ->
-							((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel()
-									.createTextVideo(name, content, backgroundColor, textColor, width, height, duration)
-						}]
+					[width: { width ->
+						[
+							height: { height->
+								[
+									duration: { int duration ->
+									((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel()
+											.createTextVideo(name, content, backgroundColor, textColor, width, height, duration)
+									}
+								]
+							}
+						]
 					}]
 				}]
 			}]
