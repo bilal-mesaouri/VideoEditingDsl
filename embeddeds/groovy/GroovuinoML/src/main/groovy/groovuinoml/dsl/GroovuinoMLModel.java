@@ -97,6 +97,23 @@ public class GroovuinoMLModel {
 		this.binding.setVariable(name, after);
 	}
 
+	public void createCut(Object target, String name, float startTime, float endTime){
+		Cut cut = new Cut();
+		cut.setName(name);
+		if (target instanceof Ressource) {
+			cut.setTarget((Ressource) target);
+		} else if (target instanceof Action) {
+			cut.setTarget(((Action) target).execute());
+		} else {
+			throw new IllegalArgumentException("Target must be of type Ressource or Action");
+		}
+		cut.setStartTime(startTime);
+		cut.setEndTime(endTime);
+		this.actions.add(cut);
+		this.binding.setVariable(name, cut);
+		
+	}
+
 	@SuppressWarnings("rawtypes")
 	public Object generateCode(String appName) {
 		App app = new App();

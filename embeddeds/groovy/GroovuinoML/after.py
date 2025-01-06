@@ -6,4 +6,4 @@ videoA = VideoFileClip(videoA.mp4)
 videoB = VideoFileClip(videoB.mp4)
 videoC = concatenate_videoclips([videoA, videoB])
 videoD = concatenate_videoclips([videoC, videoA])
-
+videoE = videoD.subclip(2.54, 29.0)

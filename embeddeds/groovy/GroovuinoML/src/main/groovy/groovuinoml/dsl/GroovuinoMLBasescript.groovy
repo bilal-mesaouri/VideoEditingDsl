@@ -35,6 +35,27 @@ abstract class GroovuinoMLBasescript extends Script {
 		]
 	}
 
+	def cut(String name){
+		[
+			video: { target ->
+				[
+					startTime: { String startTime ->
+						[
+							endTime: { String endTime ->
+								float floatStartTime = startTime.toFloat()
+								float floatEndTime = endTime.toFloat()
+								targetObject = target instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(target) : (Object)target
+								((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createCut(targetObject, name, floatStartTime, floatEndTime) 				
+							}
+						]
+
+					} 
+				]
+
+			}
+		]
+	}
+
 	// export name
 	def export(String name) {
 		println(((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().generateCode(name).toString())

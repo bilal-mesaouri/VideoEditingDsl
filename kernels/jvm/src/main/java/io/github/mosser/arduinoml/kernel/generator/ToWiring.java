@@ -37,7 +37,8 @@ public class ToWiring extends Visitor<StringBuffer> {
 	@Override
 	public void visit(Cut cut) {
 		// TODO Auto-generated method stub
-		throw new UnsupportedOperationException("Unimplemented method 'visit'");
+		w(String.format("%s = %s.subclip(%s, %s)", cut.getName(), cut.getTarget().getName(), cut.getStartTime(), cut.getEndTime()));
+		return;
 	}
 
 	@Override
