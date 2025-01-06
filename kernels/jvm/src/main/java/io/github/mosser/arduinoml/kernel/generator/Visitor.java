@@ -16,6 +16,7 @@ public abstract class Visitor<T> {
 	public abstract void visit(After after);
 
 	public abstract void visit(Text text);
+	public abstract void visit(Superpose superpose);
 	
 	public abstract void visit(TextVideo textVideo);
 	public abstract void visit(Video Video);

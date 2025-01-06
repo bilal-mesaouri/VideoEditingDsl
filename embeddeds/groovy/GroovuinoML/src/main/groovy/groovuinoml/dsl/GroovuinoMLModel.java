@@ -20,7 +20,20 @@ public class GroovuinoMLModel {
 		this.actions = new ArrayList<Action>();
 		this.binding = binding;
 	}
-	
+	public void createTextVideo(String name, String content, String backgroundColor, String textColor,
+								int width, int height, float duration) {
+		TextVideo textVideo = new TextVideo();
+		textVideo.setName(name);
+		textVideo.setContent(content);
+		textVideo.setBackgroundColor(backgroundColor);
+		textVideo.setTextColor(textColor);
+		textVideo.setWidth(width);
+		textVideo.setHeight(height);
+		textVideo.setDuration(duration);
+
+		this.binding.setVariable(name, textVideo);
+		this.ressources.add(textVideo);
+	}
 	public void createVideo(String name, String path, float duration) {
 		Video video = new Video();
 		video.setName(name);
@@ -29,7 +42,38 @@ public class GroovuinoMLModel {
 		this.binding.setVariable(name, video);
 		this.ressources.add(video);
 	}
+	public void createText(String name, String content, String font, int x, int y) {
+		Text text = new Text();
+		text.setName(name);
+		text.setContent(content);
+		text.setFont(font);
+		text.setPositionX(x);
+		text.setPositionY(y);
+		this.binding.setVariable(name, text);
+		this.ressources.add(text);
+	}
+	public void createSuperpose(Object video, Object text, float startTime, float duration, String name) {
+		Superpose superpose = new Superpose();
+		superpose.setName(name);
 
+		if (video instanceof Video) {
+			superpose.setVideo((Video) video);
+		} else {
+			throw new IllegalArgumentException("First argument must be a Video");
+		}
+
+		if (text instanceof Text) {
+			superpose.setText((Text) text);
+		} else {
+			throw new IllegalArgumentException("Second argument must be a Text");
+		}
+
+		superpose.setStartTime(startTime);
+		superpose.setDuration(duration);
+
+		this.actions.add(superpose);
+		this.binding.setVariable(name, superpose);
+	}
 	public void createAfter(Object source, Object target, String name) {
 		After after = new After();
 		after.setName(name);

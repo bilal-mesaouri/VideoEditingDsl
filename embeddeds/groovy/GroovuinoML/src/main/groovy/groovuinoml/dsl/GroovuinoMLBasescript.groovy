@@ -51,4 +51,52 @@ abstract class GroovuinoMLBasescript extends Script {
 			println "Run method is disabled"
 		}
 	}
+
+
+	def text(String name) {
+		[content: { content ->
+			[font: { font ->
+				[position: { x, y ->
+					((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel()
+							.createText(name, content, font, x, y)
+				}]
+			}]
+		}]
+	}
+
+
+	def superpose(String name) {
+		[firstVideo: { video ->
+			[secondVideo: { text ->
+				[startTime: { start ->
+					[duration: { duration ->
+						def videoObj = video instanceof String ?
+								((GroovuinoMLBinding)this.getBinding()).getVariable(video) :
+								video
+						def textObj = text instanceof String ?
+								((GroovuinoMLBinding)this.getBinding()).getVariable(text) :
+								text
+						((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel()
+								.createSuperpose(videoObj, textObj, start, duration, name)
+					}]
+				}]
+			}]
+		}]
+	}
+
+	def textVideo(String name) {
+		[content: { content ->
+			[backgroundColor: { backgroundColor ->
+				[textColor: { textColor ->
+					[size: { width, height ->
+						[duration: { duration ->
+							((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel()
+									.createTextVideo(name, content, backgroundColor, textColor, width, height, duration)
+						}]
+					}]
+				}]
+			}]
+		}]
+	}
 }
+
