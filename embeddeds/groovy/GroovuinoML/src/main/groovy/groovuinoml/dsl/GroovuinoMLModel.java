@@ -20,7 +20,20 @@ public class GroovuinoMLModel {
 		this.actions = new ArrayList<Action>();
 		this.binding = binding;
 	}
-	
+	public void createTextVideo(String name, String content, String backgroundColor, String textColor,
+								int width, int height, float duration) {
+		TextVideo textVideo = new TextVideo();
+		textVideo.setName(name);
+		textVideo.setContent(content);
+		textVideo.setBackgroundColor(backgroundColor);
+		textVideo.setTextColor(textColor);
+		textVideo.setWidth(width);
+		textVideo.setHeight(height);
+		textVideo.setDuration(duration);
+
+		this.binding.setVariable(name, textVideo);
+		this.ressources.add(textVideo);
+	}
 	public void createVideo(String name, String path, float duration) {
 		Video video = new Video();
 		video.setName(name);
@@ -29,9 +42,38 @@ public class GroovuinoMLModel {
 		this.binding.setVariable(name, video);
 		this.ressources.add(video);
 	}
+	public void createText(String name, String content, String font, int x, int y) {
+		Text text = new Text();
+		text.setName(name);
+		text.setContent(content);
+		text.setFont(font);
+		text.setPositionX(x);
+		text.setPositionY(y);
+		this.binding.setVariable(name, text);
+		this.ressources.add(text);
+	}
+	public void createSuperpose(Object video, Object text, float startTime, float duration, String name) {
+		Superpose superpose = new Superpose();
+		superpose.setName(name);
 
+		if (video instanceof Video) {
+			superpose.setVideo((Video) video);
+		} else {
+			throw new IllegalArgumentException("First argument must be a Video");
+		}
 
+		if (text instanceof Text) {
+			superpose.setText((Text) text);
+		} else {
+			throw new IllegalArgumentException("Second argument must be a Text");
+		}
 
+		superpose.setStartTime(startTime);
+		superpose.setDuration(duration);
+
+		this.actions.add(superpose);
+		this.binding.setVariable(name, superpose);
+	}
 	public void createAfter(Object source, Object target, String name) {
 		After after = new After();
 		after.setName(name);
@@ -55,36 +97,22 @@ public class GroovuinoMLModel {
 		this.binding.setVariable(name, after);
 	}
 
-	public void createAudio(String name, String path, float duration) {
-		Audio audio = new Audio();
-		audio.setName(name);
-		audio.setPath(path);
-		audio.setDuration(duration);
-		this.binding.setVariable(name, audio);
-		this.ressources.add(audio);
-	}
-
-	public void createSetAudio(Object audio, Object video, String name) {
-		SetAudio setAudio = new SetAudio();
-		setAudio.setName(name);
-
-		if (audio instanceof Audio) {
-			setAudio.setSource((Ressource) audio);
+	public void createCut(Object target, String name, float startTime, float endTime){
+		Cut cut = new Cut();
+		cut.setName(name);
+		if (target instanceof Ressource) {
+			cut.setTarget((Ressource) target);
+		} else if (target instanceof Action) {
+			cut.setTarget(((Action) target).execute());
 		} else {
-			throw new IllegalArgumentException("Audio source must be of type Audio");
+			throw new IllegalArgumentException("Target must be of type Ressource or Action");
 		}
-
-		if (video instanceof Video) {
-			setAudio.setTarget((Ressource) video);
-		} else {
-			throw new IllegalArgumentException("Video target must be of type Video");
-		}
-
-		this.actions.add(setAudio);
-		this.binding.setVariable(name, setAudio);
+		cut.setStartTime(startTime);
+		cut.setEndTime(endTime);
+		this.actions.add(cut);
+		this.binding.setVariable(name, cut);
+		
 	}
-
-
 
 	@SuppressWarnings("rawtypes")
 	public Object generateCode(String appName) {

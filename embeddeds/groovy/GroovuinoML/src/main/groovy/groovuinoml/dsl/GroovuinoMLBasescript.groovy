@@ -46,6 +46,27 @@ abstract class GroovuinoMLBasescript extends Script {
 		]
 	}
 
+	def cut(String name){
+		[
+			video: { target ->
+				[
+					startTime: { String startTime ->
+						[
+							endTime: { String endTime ->
+								float floatStartTime = startTime.toFloat()
+								float floatEndTime = endTime.toFloat()
+								targetObject = target instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(target) : (Object)target
+								((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createCut(targetObject, name, floatStartTime, floatEndTime) 				
+							}
+						]
+
+					} 
+				]
+
+			}
+		]
+	}
+
 	// export name
 	def export(String name) {
 		println(((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().generateCode(name).toString())
@@ -74,4 +95,61 @@ abstract class GroovuinoMLBasescript extends Script {
 			println "Run method is disabled"
 		}
 	}
+
+
+	def text(String name) {
+		[content: { content ->
+			[font: { font ->
+				[positionX: { x->
+					[positionY: {y->
+						((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel()
+								.createText(name, content, font, x, y)
+						}
+					]
+				}]
+			}]
+		}]
+	}
+
+
+	def superpose(String name) {
+		[firstVideo: { video ->
+			[secondVideo: { text ->
+				[startTime: { start ->
+					[duration: { duration ->
+						def videoObj = video instanceof String ?
+								((GroovuinoMLBinding)this.getBinding()).getVariable(video) :
+								video
+						def textObj = text instanceof String ?
+								((GroovuinoMLBinding)this.getBinding()).getVariable(text) :
+								text
+						((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel()
+								.createSuperpose(videoObj, textObj, start, duration, name)
+					}]
+				}]
+			}]
+		}]
+	}
+
+	def textVideo(String name) {
+		[content: { content ->
+			[backgroundColor: { backgroundColor ->
+				[textColor: { textColor ->
+					[width: { width ->
+						[
+							height: { height->
+								[
+									duration: { int duration ->
+									((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel()
+											.createTextVideo(name, content, backgroundColor, textColor, width, height, duration)
+									}
+								]
+							}
+						]
+					}]
+				}]
+			}]
+		}]
+	}
 }
+

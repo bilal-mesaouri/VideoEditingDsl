@@ -5,4 +5,6 @@ after "videoC" firstVideo videoA secondVideo videoB
 
 after "videoD" firstVideo videoC secondVideo videoA
 
+cut   "videoE" video videoD startTime "2.54" endTime "29"
+
 export "Switch!"
