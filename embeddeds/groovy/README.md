@@ -79,6 +79,8 @@ export "Switch!"
   * Or an executable jar can be built using `mvn clean compile assembly:single`
   * Then, to run the Switch example:
     * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\Switch.groovy`
+    * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\dualCheckAlarm.groovy`
+    * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\AudioSyncTest.groovy`
   * ... it is also possible to use the .bat files build.bat and run.bat (Windows)
 
 

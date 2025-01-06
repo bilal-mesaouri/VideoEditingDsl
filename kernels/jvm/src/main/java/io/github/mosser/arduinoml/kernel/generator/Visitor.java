@@ -19,6 +19,8 @@ public abstract class Visitor<T> {
 	
 	public abstract void visit(TextVideo textVideo);
 	public abstract void visit(Video Video);
+	public abstract void visit(Audio audio);
+	public abstract void visit(SetAudio setAudio);
 
 
 	/***********************
@@ -32,6 +34,7 @@ public abstract class Visitor<T> {
 	public T getResult() {
 		return result;
 	}
+
 
 }
 

@@ -19,6 +19,17 @@ abstract class GroovuinoMLBasescript extends Script {
 		}	
 		]
 	}
+
+	// Définir un fichier audio
+	def audio(String name) {
+		[path: { path ->
+			[
+					duration: { duration -> ((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createAudio(name, path, duration) },
+			]
+		}
+		]
+	}
+
 	// actuator "name" pin n
 
 	def after(String name) {
@@ -39,7 +50,19 @@ abstract class GroovuinoMLBasescript extends Script {
 	def export(String name) {
 		println(((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().generateCode(name).toString())
 	}
-	
+
+	// setAudio "name" audio "audioName" video "videoName"
+	def setAudio(String name) {
+		[audio: { audio ->
+			[video: { video ->
+				audioObject = audio instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(audio) : (Object)audio
+				videoObject = video instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(video) : (Object)video
+				((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createSetAudio(audioObject, videoObject, name)
+			}]
+		}]
+	}
+
+
 	// disable run method while running
 	int count = 0
 	abstract void scriptBody()

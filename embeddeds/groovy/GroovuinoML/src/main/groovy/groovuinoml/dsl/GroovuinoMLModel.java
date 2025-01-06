@@ -30,6 +30,8 @@ public class GroovuinoMLModel {
 		this.ressources.add(video);
 	}
 
+
+
 	public void createAfter(Object source, Object target, String name) {
 		After after = new After();
 		after.setName(name);
@@ -52,6 +54,37 @@ public class GroovuinoMLModel {
 		this.actions.add(after);
 		this.binding.setVariable(name, after);
 	}
+
+	public void createAudio(String name, String path, float duration) {
+		Audio audio = new Audio();
+		audio.setName(name);
+		audio.setPath(path);
+		audio.setDuration(duration);
+		this.binding.setVariable(name, audio);
+		this.ressources.add(audio);
+	}
+
+	public void createSetAudio(Object audio, Object video, String name) {
+		SetAudio setAudio = new SetAudio();
+		setAudio.setName(name);
+
+		if (audio instanceof Audio) {
+			setAudio.setSource((Ressource) audio);
+		} else {
+			throw new IllegalArgumentException("Audio source must be of type Audio");
+		}
+
+		if (video instanceof Video) {
+			setAudio.setTarget((Ressource) video);
+		} else {
+			throw new IllegalArgumentException("Video target must be of type Video");
+		}
+
+		this.actions.add(setAudio);
+		this.binding.setVariable(name, setAudio);
+	}
+
+
 
 	@SuppressWarnings("rawtypes")
 	public Object generateCode(String appName) {

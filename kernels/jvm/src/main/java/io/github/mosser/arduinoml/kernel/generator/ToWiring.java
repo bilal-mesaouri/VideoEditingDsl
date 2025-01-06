@@ -45,6 +45,21 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 
 	@Override
+	public void visit(Audio audio) {
+		w(String.format("%s_audio = AudioFileClip('%s')\n", audio.getName(), audio.getPath()));
+	}
+
+
+	@Override
+	public void visit(SetAudio setAudio) {
+		w(String.format("%s_combined = %s.set_audio(%s_audio)\n",
+				setAudio.getName(),
+				setAudio.getTarget().getName(),
+				setAudio.getSource().getName()));
+	}
+
+
+	@Override
 	public void visit(After after) {
 
 		w(String.format("%s = concatenate_videoclips([%s, %s])\n",after.getName() , after.getSource().getName(), after.getTarget().getName()));
