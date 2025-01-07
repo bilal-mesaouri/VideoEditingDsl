@@ -46,26 +46,54 @@ abstract class GroovuinoMLBasescript extends Script {
 		]
 	}
 
-	def cut(String name){
+	def cut(String name) {
 		[
-			video: { target ->
-				[
-					startTime: { String startTime ->
-						[
-							endTime: { String endTime ->
-								float floatStartTime = startTime.toFloat()
-								float floatEndTime = endTime.toFloat()
-								targetObject = target instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(target) : (Object)target
-								((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createCut(targetObject, name, floatStartTime, floatEndTime) 				
+				video: { video ->
+					[
+							startTime: { String startTime ->
+								[
+										endTime: { String endTime ->
+											float floatStartTime = startTime.toFloat()
+											float floatEndTime = endTime.toFloat()
+											def videoObject = video instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(video) : (Object)video
+											((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createCut(videoObject, name, floatStartTime, floatEndTime)
+										}
+								]
 							}
-						]
-
-					} 
-				]
-
-			}
+					]
+				},
+				audio: { audio ->
+					[
+							startTime: { String startTime ->
+								[
+										endTime: { String endTime ->
+											float floatStartTime = startTime.toFloat()
+											float floatEndTime = endTime.toFloat()
+											def audioObject = audio instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(audio) : (Object)audio
+											((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createCut(audioObject, name, floatStartTime, floatEndTime)
+										}
+								]
+							}
+					]
+				},
+				target: { target ->
+					[
+							startTime: { String startTime ->
+								[
+										endTime: { String endTime ->
+											float floatStartTime = startTime.toFloat()
+											float floatEndTime = endTime.toFloat()
+											def targetObject = target instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(target) : (Object)target
+											((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createCut(targetObject, name, floatStartTime, floatEndTime)
+										}
+								]
+							}
+					]
+				}
 		]
 	}
+
+
 
 	// export name
 	def export(String name) {
@@ -156,15 +184,27 @@ abstract class GroovuinoMLBasescript extends Script {
 			}]
 		}]
 	}
+
 	def concatAudio(String name) {
 		[firstAudio: { audio1 ->
 			[
 					secondAudio: { audio2 ->
-						((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createConcatAudio(audio1, audio2, name)
+						def audio1Object = audio1 instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(audio1) : (Object)audio1
+						if (audio1Object instanceof Action) {
+							audio1Object = ((Action)audio1Object).execute()
+						}
+
+						def audio2Object = audio2 instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(audio2) : (Object)audio2
+						if (audio2Object instanceof Action) {
+							audio2Object = ((Action)audio2Object).execute()
+						}
+
+						((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createConcatAudio(audio1Object, audio2Object, name)
 					}
 			]
 		}]
 	}
+
 
 	def adjustVolume(String name) {
 		[audio: { audio ->

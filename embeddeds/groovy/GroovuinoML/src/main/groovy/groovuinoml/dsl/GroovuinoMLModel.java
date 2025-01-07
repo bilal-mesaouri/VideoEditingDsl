@@ -177,6 +177,17 @@ public class GroovuinoMLModel {
 		ConcatAudio concatAudio = new ConcatAudio();
 		concatAudio.setName(name);
 
+		// Gérer les actions pour audio1
+		if (audio1 instanceof Action) {
+			audio1 = ((Action) audio1).execute();
+		}
+
+		// Gérer les actions pour audio2
+		if (audio2 instanceof Action) {
+			audio2 = ((Action) audio2).execute();
+		}
+
+		// Vérifiez que les deux sont de type Audio
 		if (audio1 instanceof Audio) {
 			concatAudio.setSource((Ressource) audio1);
 		} else {
@@ -192,6 +203,7 @@ public class GroovuinoMLModel {
 		this.actions.add(concatAudio);
 		this.binding.setVariable(name, concatAudio.execute());
 	}
+
 
 
 	public void createAdjustVolume(Object audio, Object volumeFactor, String name) {
