@@ -1,5 +1,6 @@
 package main.groovy.groovuinoml.dsl;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,7 +121,16 @@ public class GroovuinoMLModel {
 		audio.setPath(path);
 
 		try {
-			float parsedDuration = duration instanceof String ? Float.parseFloat((String) duration) : (Float) duration;
+			float parsedDuration;
+			if (duration instanceof String) {
+				parsedDuration = Float.parseFloat((String) duration);
+			} else if (duration instanceof Integer) {
+				parsedDuration = ((Integer) duration).floatValue();
+			} else if (duration instanceof Float) {
+				parsedDuration = (Float) duration;
+			} else {
+				throw new IllegalArgumentException("Duration must be a String, Integer, or Float");
+			}
 			audio.setDuration(parsedDuration);
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException("Duration must be a valid number");
@@ -129,6 +139,7 @@ public class GroovuinoMLModel {
 		this.binding.setVariable(name, audio);
 		this.ressources.add(audio);
 	}
+
 
 
 	public void createSetAudio(Object audio, Object video, String name) {
@@ -187,6 +198,7 @@ public class GroovuinoMLModel {
 		AdjustVolume adjustVolume = new AdjustVolume();
 		adjustVolume.setName(name);
 
+		// Gérer les actions pour `audio`
 		if (audio instanceof Action) {
 			audio = ((Action) audio).execute();
 		}
@@ -198,7 +210,18 @@ public class GroovuinoMLModel {
 		}
 
 		try {
-			float parsedVolume = volumeFactor instanceof String ? Float.parseFloat((String) volumeFactor) : (Float) volumeFactor;
+			float parsedVolume;
+			if (volumeFactor instanceof String) {
+				parsedVolume = Float.parseFloat((String) volumeFactor);
+			} else if (volumeFactor instanceof BigDecimal) {
+				parsedVolume = ((BigDecimal) volumeFactor).floatValue();
+			} else if (volumeFactor instanceof Integer) {
+				parsedVolume = ((Integer) volumeFactor).floatValue();
+			} else if (volumeFactor instanceof Float) {
+				parsedVolume = (Float) volumeFactor;
+			} else {
+				throw new IllegalArgumentException("Volume factor must be a String, BigDecimal, Integer, or Float");
+			}
 			adjustVolume.setVolumeFactor(parsedVolume);
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException("Volume factor must be a valid number");
@@ -209,10 +232,13 @@ public class GroovuinoMLModel {
 	}
 
 
-	public void createAudioTransition(Object audio1, Object audio2, String duration, String name) {
+
+
+	public void createAudioTransition(Object audio1, Object audio2, Object duration, String name) {
 		AudioTransition audioTransition = new AudioTransition();
 		audioTransition.setName(name);
 
+		// Vérifiez si les arguments audio sont des actions
 		if (audio1 instanceof Action) {
 			audio1 = ((Action) audio1).execute();
 		}
@@ -220,6 +246,7 @@ public class GroovuinoMLModel {
 			audio2 = ((Action) audio2).execute();
 		}
 
+		// Validez les types audio
 		if (audio1 instanceof Audio) {
 			audioTransition.setSource((Ressource) audio1);
 		} else {
@@ -232,17 +259,28 @@ public class GroovuinoMLModel {
 			throw new IllegalArgumentException("Second argument must be of type Audio");
 		}
 
+		// Convertissez duration en Float
 		try {
-			// Toujours convertir duration en Float
-			float parsedDuration = Float.parseFloat(duration);
+			float parsedDuration;
+			if (duration instanceof String) {
+				parsedDuration = Float.parseFloat((String) duration);
+			} else if (duration instanceof Integer) {
+				parsedDuration = ((Integer) duration).floatValue();
+			} else if (duration instanceof Float) {
+				parsedDuration = (Float) duration;
+			} else {
+				throw new IllegalArgumentException("Duration must be a String, Integer, or Float");
+			}
 			audioTransition.setTransitionDuration(parsedDuration);
 		} catch (NumberFormatException e) {
 			throw new IllegalArgumentException("Transition duration must be a valid number");
 		}
 
+		// Ajoutez l'action
 		this.actions.add(audioTransition);
 		this.binding.setVariable(name, audioTransition);
 	}
+
 
 
 

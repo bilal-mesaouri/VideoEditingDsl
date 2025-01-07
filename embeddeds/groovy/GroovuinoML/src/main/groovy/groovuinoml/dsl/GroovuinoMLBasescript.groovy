@@ -171,11 +171,13 @@ abstract class GroovuinoMLBasescript extends Script {
 			[
 					volumeFactor: { factor ->
 						audioObject = audio instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(audio) : (Object)audio
-						((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createAdjustVolume(audioObject, factor, name)
+						def parsedFactor = factor instanceof String ? Float.parseFloat(factor) : factor
+						((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createAdjustVolume(audioObject, parsedFactor, name)
 					}
 			]
 		}]
 	}
+
 
 
 	def audioTransition(String name) {
@@ -194,13 +196,15 @@ abstract class GroovuinoMLBasescript extends Script {
 										audio2Object = ((Action)audio2Object).execute()
 									}
 
-									((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createAudioTransition(audio1Object, audio2Object, duration, name)
+									def parsedDuration = duration instanceof String ? Float.parseFloat(duration) : duration
+									((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createAudioTransition(audio1Object, audio2Object, parsedDuration, name)
 								}
 						]
 					}
 			]
 		}]
 	}
+
 
 
 

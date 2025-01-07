@@ -83,6 +83,7 @@ export "Switch!"
     * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\AudioSyncTest.groovy`
     * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\holidayVideo.groovy`
     * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\testsuperpose.groovy`
+    * `java -jar target\dsl-groovy-1.0-jar-with-dependencies.jar scripts\TestComplexSupport.groovy`
   * ... it is also possible to use the .bat files build.bat and run.bat (Windows)
 
 
