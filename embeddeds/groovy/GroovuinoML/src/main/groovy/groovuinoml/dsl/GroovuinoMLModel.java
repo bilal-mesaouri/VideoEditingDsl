@@ -114,23 +114,41 @@ public class GroovuinoMLModel {
 		
 	}
 
-	public void createAudio(String name, String path, float duration) {
+	public void createAudio(String name, String path, Object duration) {
 		Audio audio = new Audio();
 		audio.setName(name);
 		audio.setPath(path);
-		audio.setDuration(duration);
+
+		try {
+			float parsedDuration = duration instanceof String ? Float.parseFloat((String) duration) : (Float) duration;
+			audio.setDuration(parsedDuration);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Duration must be a valid number");
+		}
+
 		this.binding.setVariable(name, audio);
 		this.ressources.add(audio);
 	}
+
 
 	public void createSetAudio(Object audio, Object video, String name) {
 		SetAudio setAudio = new SetAudio();
 		setAudio.setName(name);
 
+		// Gérer les actions pour `audio`
+		if (audio instanceof Action) {
+			audio = ((Action) audio).execute();
+		}
+
 		if (audio instanceof Audio) {
 			setAudio.setSource((Ressource) audio);
 		} else {
 			throw new IllegalArgumentException("Audio source must be of type Audio");
+		}
+
+		// Gérer les actions pour `video`
+		if (video instanceof Action) {
+			video = ((Action) video).execute();
 		}
 
 		if (video instanceof Video) {
@@ -142,6 +160,94 @@ public class GroovuinoMLModel {
 		this.actions.add(setAudio);
 		this.binding.setVariable(name, setAudio);
 	}
+
+
+	public void createConcatAudio(Object audio1, Object audio2, String name) {
+		ConcatAudio concatAudio = new ConcatAudio();
+		concatAudio.setName(name);
+
+		if (audio1 instanceof Audio) {
+			concatAudio.setSource((Ressource) audio1);
+		} else {
+			throw new IllegalArgumentException("First argument must be of type Audio");
+		}
+
+		if (audio2 instanceof Audio) {
+			concatAudio.setTarget((Ressource) audio2);
+		} else {
+			throw new IllegalArgumentException("Second argument must be of type Audio");
+		}
+
+		this.actions.add(concatAudio);
+		this.binding.setVariable(name, concatAudio.execute());
+	}
+
+
+	public void createAdjustVolume(Object audio, Object volumeFactor, String name) {
+		AdjustVolume adjustVolume = new AdjustVolume();
+		adjustVolume.setName(name);
+
+		if (audio instanceof Action) {
+			audio = ((Action) audio).execute();
+		}
+
+		if (audio instanceof Audio) {
+			adjustVolume.setTarget((Ressource) audio);
+		} else {
+			throw new IllegalArgumentException("Argument must be of type Audio");
+		}
+
+		try {
+			float parsedVolume = volumeFactor instanceof String ? Float.parseFloat((String) volumeFactor) : (Float) volumeFactor;
+			adjustVolume.setVolumeFactor(parsedVolume);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Volume factor must be a valid number");
+		}
+
+		this.actions.add(adjustVolume);
+		this.binding.setVariable(name, adjustVolume);
+	}
+
+
+	public void createAudioTransition(Object audio1, Object audio2, String duration, String name) {
+		AudioTransition audioTransition = new AudioTransition();
+		audioTransition.setName(name);
+
+		if (audio1 instanceof Action) {
+			audio1 = ((Action) audio1).execute();
+		}
+		if (audio2 instanceof Action) {
+			audio2 = ((Action) audio2).execute();
+		}
+
+		if (audio1 instanceof Audio) {
+			audioTransition.setSource((Ressource) audio1);
+		} else {
+			throw new IllegalArgumentException("First argument must be of type Audio");
+		}
+
+		if (audio2 instanceof Audio) {
+			audioTransition.setTarget((Ressource) audio2);
+		} else {
+			throw new IllegalArgumentException("Second argument must be of type Audio");
+		}
+
+		try {
+			// Toujours convertir duration en Float
+			float parsedDuration = Float.parseFloat(duration);
+			audioTransition.setTransitionDuration(parsedDuration);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException("Transition duration must be a valid number");
+		}
+
+		this.actions.add(audioTransition);
+		this.binding.setVariable(name, audioTransition);
+	}
+
+
+
+
+
 
 	@SuppressWarnings("rawtypes")
 	public Object generateCode(String appName) {

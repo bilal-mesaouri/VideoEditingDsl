@@ -131,5 +131,33 @@ public class ToWiring extends Visitor<StringBuffer> {
 				setAudio.getSource().getName()));
 	}
 
+	@Override
+	public void visit(ConcatAudio concatAudio) {
+		w(String.format("%s_audio = concatenate_audioclips([%s_audio, %s_audio])\n",
+				concatAudio.getName(),
+				concatAudio.getSource().getName(),
+				concatAudio.getTarget().getName()));
+	}
+
+	@Override
+	public void visit(AdjustVolume adjustVolume) {
+		w(String.format("%s_audio = %s_audio.volumex(%f)\n",
+				adjustVolume.getName(),
+				adjustVolume.getTarget().getName(),
+				adjustVolume.getVolumeFactor()));
+	}
+
+
+	@Override
+	public void visit(AudioTransition audioTransition) {
+		w(String.format("%s_audio = %s_audio.crossfadeout(%f).crossfadein(%s_audio, %f)\n",
+				audioTransition.getName(),
+				audioTransition.getSource().getName(),
+				audioTransition.getTransitionDuration(),
+				audioTransition.getTarget().getName(),
+				audioTransition.getTransitionDuration()));
+	}
+
+
 
 }

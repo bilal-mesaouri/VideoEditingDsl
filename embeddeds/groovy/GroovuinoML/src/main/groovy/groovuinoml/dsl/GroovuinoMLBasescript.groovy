@@ -77,11 +77,16 @@ abstract class GroovuinoMLBasescript extends Script {
 		[audio: { audio ->
 			[video: { video ->
 				audioObject = audio instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(audio) : (Object)audio
+				if (audioObject instanceof Action) {
+					audioObject = ((Action) audioObject).execute()
+				}
+
 				videoObject = video instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(video) : (Object)video
 				((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createSetAudio(audioObject, videoObject, name)
 			}]
 		}]
 	}
+
 
 
 	// disable run method while running
@@ -151,5 +156,55 @@ abstract class GroovuinoMLBasescript extends Script {
 			}]
 		}]
 	}
+	def concatAudio(String name) {
+		[firstAudio: { audio1 ->
+			[
+					secondAudio: { audio2 ->
+						((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createConcatAudio(audio1, audio2, name)
+					}
+			]
+		}]
+	}
+
+	def adjustVolume(String name) {
+		[audio: { audio ->
+			[
+					volumeFactor: { factor ->
+						audioObject = audio instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(audio) : (Object)audio
+						((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createAdjustVolume(audioObject, factor, name)
+					}
+			]
+		}]
+	}
+
+
+	def audioTransition(String name) {
+		[firstAudio: { audio1 ->
+			[
+					secondAudio: { audio2 ->
+						[
+								transitionDuration: { duration ->
+									audio1Object = audio1 instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(audio1) : (Object)audio1
+									if (audio1Object instanceof Action) {
+										audio1Object = ((Action)audio1Object).execute()
+									}
+
+									audio2Object = audio2 instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(audio2) : (Object)audio2
+									if (audio2Object instanceof Action) {
+										audio2Object = ((Action)audio2Object).execute()
+									}
+
+									((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createAudioTransition(audio1Object, audio2Object, duration, name)
+								}
+						]
+					}
+			]
+		}]
+	}
+
+
+
+
+
 }
 

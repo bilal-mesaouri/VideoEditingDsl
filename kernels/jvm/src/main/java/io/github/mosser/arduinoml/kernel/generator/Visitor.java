@@ -24,6 +24,7 @@ public abstract class Visitor<T> {
 	public abstract void visit(SetAudio setAudio);
 	public abstract void visit(ConcatAudio concatAudio);
 	public abstract void visit(AdjustVolume adjustVolume);
+	public abstract void visit(AudioTransition audioTransition);
 
 
 	/***********************

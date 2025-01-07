@@ -12,18 +12,19 @@ public class ConcatAudio extends BinaryAction {
             throw new IllegalArgumentException("Both source and target must be of type Audio");
         }
 
-        Audio audioSource = (Audio) source;
-        Audio audioTarget = (Audio) target;
+        Audio audio1 = (Audio) source;
+        Audio audio2 = (Audio) target;
 
         try {
             Audio combinedAudio = new Audio();
             combinedAudio.setName(this.getName());
-            combinedAudio.setDuration(audioSource.getDuration() + audioTarget.getDuration());
+            combinedAudio.setDuration(audio1.getDuration() + audio2.getDuration());
             return combinedAudio;
         } catch (Exception e) {
             throw new RuntimeException("Failed to concatenate audio tracks", e);
         }
     }
+
 
     @Override
     public void accept(Visitor visitor) {
