@@ -46,7 +46,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(Video video) {
-		w(String.format("%s = VideoFileClip(\"%s\")\n",
+		w(String.format("%s = VideoFileClip(\"%s\").set_fps(24)\n",
 				video.getName(),
 				video.getPath()
 		));
@@ -54,10 +54,11 @@ public class ToWiring extends Visitor<StringBuffer> {
 	@Override
 	public void visit(After after) {
 
-		w(String.format("%s = concatenate_videoclips([%s, %s])\n",after.getName() , after.getSource().getName(), after.getTarget().getName()));
+		w(String.format("%s = concatenate_videoclips([%s, %s]).set_fps(24)\n",after.getName() , after.getSource().getName(), after.getTarget().getName()));
 		return;
 
 	}
+
 
 	@Override
 	public void visit(Text text) {
@@ -78,8 +79,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(TextVideo textVideo) {
-
-		w(String.format(Locale.US,"background_%s = ColorClip(size=(%d, %d), color='%s', duration=%.1f)\n",
+		w(String.format(Locale.US,"background_%s = ColorClip(size=(%d, %d), color='%s', duration=%.1f).set_fps(24)\n",  // Ajout du fps
 				textVideo.getName(),
 				textVideo.getWidth(),
 				textVideo.getHeight(),
@@ -87,30 +87,28 @@ public class ToWiring extends Visitor<StringBuffer> {
 				textVideo.getDuration()
 		));
 
-
 		w(String.format("text_%s = TextClip(txt='%s', font='Arial', color='%s', fontsize=70)\n",
 				textVideo.getName(),
 				textVideo.getContent(),
 				textVideo.getTextColor()
 		));
 
-
 		w(String.format("text_%s = text_%s.set_position('center')\n",
 				textVideo.getName(),
 				textVideo.getName()
 		));
 
-		// Combine background and text
-		w(String.format("%s = CompositeVideoClip([background_%s, text_%s])\n",
+		w(String.format("%s = CompositeVideoClip([background_%s, text_%s]).set_fps(24)\n",  // Ajout du fps
 				textVideo.getName(),
 				textVideo.getName(),
 				textVideo.getName()
 		));
 	}
+
 	@Override
 	public void visit(Superpose superpose) {
 		w(String.format(Locale.US,
-				"%s = CompositeVideoClip([%s, %s.set_start(%.1f).set_duration(%.1f)])\n",
+				"%s = CompositeVideoClip([%s, %s.set_start(%.1f).set_duration(%.1f)]).set_fps(24)\n",  // Ajout du fps
 				superpose.getName(),
 				superpose.getVideo().getName(),
 				superpose.getText().getName(),
@@ -169,7 +167,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				stack.getScale()
 		));
 
-		w(String.format(Locale.ENGLISH, "%s = CompositeVideoClip([%s, %s_resized.set_position((%d, %d))])\n",
+		w(String.format(Locale.ENGLISH, "%s = CompositeVideoClip([%s, %s_resized.set_position((%d, %d))]).set_fps(24)\n",  // Ajout du fps
 				stack.getName(),
 				stack.getSource().getName(),
 				stack.getTarget().getName(),
