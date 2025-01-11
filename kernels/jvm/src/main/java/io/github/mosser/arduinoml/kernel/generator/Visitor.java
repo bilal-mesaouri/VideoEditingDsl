@@ -40,5 +40,7 @@ public abstract class Visitor<T> {
 	}
 
 
+
+	public abstract void visit(Stack stack);
 }
 

@@ -159,5 +159,22 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 
 
+	@Override
+	public void visit(Stack stack) {
+		w(String.format(Locale.ENGLISH, "%s_resized = %s.resize(%.2f)\n",
+				stack.getTarget().getName(),
+				stack.getTarget().getName(),
+				stack.getScale()
+		));
+
+		w(String.format(Locale.ENGLISH, "%s = CompositeVideoClip([%s, %s_resized.set_position((%d, %d))])\n",
+				stack.getName(),
+				stack.getSource().getName(),
+				stack.getTarget().getName(),
+				stack.getCorner().getX(),
+				stack.getCorner().getY()
+		));
+	}
+
 
 }

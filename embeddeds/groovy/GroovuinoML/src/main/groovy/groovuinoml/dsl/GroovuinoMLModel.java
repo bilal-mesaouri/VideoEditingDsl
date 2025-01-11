@@ -293,7 +293,42 @@ public class GroovuinoMLModel {
 		this.binding.setVariable(name, audioTransition);
 	}
 
+	public void createStack(Object overlay, Object main, float scale, String corner, String name) {
+		Stack stack = new Stack();
+		stack.setName(name);
 
+		if (overlay instanceof Ressource) {
+			stack.setTarget((Ressource) overlay);
+		} else if (overlay instanceof Action) {
+			stack.setTarget(((Action) overlay).execute());
+		} else {
+			throw new IllegalArgumentException("Overlay must be of type Ressource or Action");
+		}
+
+		if (main instanceof Ressource) {
+			stack.setSource((Ressource) main);
+		} else if (main instanceof Action) {
+			stack.setSource(((Action) main).execute());
+		} else {
+			throw new IllegalArgumentException("Main video must be of type Ressource or Action");
+		}
+
+		stack.setScale(scale);
+
+		if (corner.equals("TOP_LEFT"))
+			stack.setCorner(Stack.Corner.TOP_LEFT);
+		else if (corner.equals("TOP_RIGHT"))
+			stack.setCorner(Stack.Corner.TOP_RIGHT);
+		else if (corner.equals("BOTTOM_LEFT"))
+			stack.setCorner(Stack.Corner.BOTTOM_LEFT);
+		else if (corner.equals("BOTTOM_RIGHT"))
+			stack.setCorner(Stack.Corner.BOTTOM_RIGHT);
+		else
+			throw new IllegalArgumentException("Corner must be one of: TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT");
+
+		this.actions.add(stack);
+		this.binding.setVariable(name, stack);
+	}
 
 
 
