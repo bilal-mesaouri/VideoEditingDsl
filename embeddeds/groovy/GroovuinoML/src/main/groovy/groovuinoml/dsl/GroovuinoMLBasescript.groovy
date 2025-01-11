@@ -118,9 +118,29 @@ abstract class GroovuinoMLBasescript extends Script {
 				}
 		]
 	}
-
-
-
+	def fade(String name) {
+		[target: { target ->
+			[duration: { duration ->
+				[type: { type ->
+					[stack: { stack = null ->
+						def targetObject = target instanceof String ?
+								(Object)((GroovuinoMLBinding)this.getBinding()).getVariable(target) :
+								(Object)target
+						def stackObject = stack instanceof String ?
+								(Object)((GroovuinoMLBinding)this.getBinding()).getVariable(stack) :
+								(Object)stack
+						((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createFade(
+								name,
+								targetObject,
+								duration,
+								type,
+								stackObject
+						)
+					}]
+				}]
+			}]
+		}]
+	}
 	// export name
 	def export(String name) {
 		println(((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().generateCode(name).toString())

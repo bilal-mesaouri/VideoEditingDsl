@@ -331,8 +331,36 @@ public class GroovuinoMLModel {
 	}
 
 
+ public void createFade(String name, Object target, float duration, String type, Object stack) {
+		if (name == null || name.trim().isEmpty()) {
+			throw new IllegalArgumentException("Fade name cannot be null or empty");
+		}
+		if (type == null || (!type.equals("IN") && !type.equals("OUT"))) {
+			throw new IllegalArgumentException("Type must be either 'IN' or 'OUT', got: " + type);
+		}
 
+		Fade fade = new Fade();
+		fade.setName(name);
+		fade.setDuration(duration);
+		fade.setType(type);
 
+		if (target instanceof Ressource) {
+			fade.setTarget((Ressource) target);
+		} else if (target instanceof Action) {
+			fade.setTarget(((Action) target).execute());
+		} else {
+			throw new IllegalArgumentException("Target must be of type Ressource or Action");
+		}
+
+		if (stack instanceof Stack) {
+			fade.setStack((Stack) stack);
+		} else if (stack != null) {
+			throw new IllegalArgumentException("Stack must be of type Stack");
+		}
+
+		this.actions.add(fade);
+		this.binding.setVariable(name, fade);
+	}
 
 	@SuppressWarnings("rawtypes")
 	public Object generateCode(String appName) {

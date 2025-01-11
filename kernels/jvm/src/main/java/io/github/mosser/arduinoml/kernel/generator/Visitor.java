@@ -42,5 +42,7 @@ public abstract class Visitor<T> {
 
 
 	public abstract void visit(Stack stack);
+
+	public abstract void visit(Fade fade);
 }
 

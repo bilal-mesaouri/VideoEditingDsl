@@ -24,8 +24,11 @@ public class ToWiring extends Visitor<StringBuffer> {
 		w("# Wiring code generated from an ArduinoML model\n");
 		w(String.format("# Application name: %s\n", app.getName()) + "\n");
 
-		w("from moviepy.editor import VideoFileClip, concatenate_videoclips, TextClip, CompositeVideoClip\n\n");
 
+		w("from moviepy.editor import VideoFileClip, concatenate_videoclips, TextClip, " +
+				"CompositeVideoClip, ColorClip, vfx\n\n");
+
+		// Visite de toutes les ressources et actions
 		for(Ressource ressource: app.getRessources()) {
 			ressource.accept(this);
 		}
@@ -76,7 +79,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 	@Override
 	public void visit(TextVideo textVideo) {
 
-		w(String.format("background_%s = ColorClip(size=(%d, %d), color='%s', duration=%.1f)\n",
+		w(String.format(Locale.US,"background_%s = ColorClip(size=(%d, %d), color='%s', duration=%.1f)\n",
 				textVideo.getName(),
 				textVideo.getWidth(),
 				textVideo.getHeight(),
@@ -106,7 +109,6 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 	@Override
 	public void visit(Superpose superpose) {
-		// Forcer l'utilisation de la locale anglaise pour avoir des points
 		w(String.format(Locale.US,
 				"%s = CompositeVideoClip([%s, %s.set_start(%.1f).set_duration(%.1f)])\n",
 				superpose.getName(),
@@ -150,7 +152,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(AudioTransition audioTransition) {
-		w(String.format("%s_audio = %s_audio.crossfadeout(%f).crossfadein(%s_audio, %f)\n",
+		w(String.format(Locale.US,"%s_audio = %s_audio.crossfadeout(%f).crossfadein(%s_audio, %f)\n",
 				audioTransition.getName(),
 				audioTransition.getSource().getName(),
 				audioTransition.getTransitionDuration(),
@@ -175,6 +177,45 @@ public class ToWiring extends Visitor<StringBuffer> {
 				stack.getCorner().getY()
 		));
 	}
+	@Override
+	public void visit(Fade fade) {
+		if (fade.getStack() != null) {
+			if (fade.getType().equals("IN")) {
+				w(String.format(Locale.US, "%s = %s.fx(vfx.fadein(duration=%.1f))\n",
+						fade.getTarget().getName(),
+						fade.getTarget().getName(),
+						fade.getDuration()
+				));
+			} else {  // "OUT"
+				w(String.format(Locale.US, "%s = %s.fx(vfx.fadeout(duration=%.1f))\n",
+						fade.getTarget().getName(),
+						fade.getTarget().getName(),
+						fade.getDuration()
+				));
+			}
 
+			w(String.format(Locale.US, "%s = CompositeVideoClip([%s, %s_resized.set_position((%d, %d))])\n",
+					fade.getStack().getName(),
+					fade.getTarget().getName(),
+					fade.getStack().getTarget().getName(),
+					fade.getStack().getCorner().getX(),
+					fade.getStack().getCorner().getY()
+			));
+		} else {
+			if (fade.getType().equals("IN")) {
+				w(String.format(Locale.US, "%s = %s.fx(vfx.fadein(duration=%.1f))\n",
+						fade.getTarget().getName(),
+						fade.getTarget().getName(),
+						fade.getDuration()
+				));
+			} else {  // "OUT"
+				w(String.format(Locale.US, "%s = %s.fx(vfx.fadeout(duration=%.1f))\n",
+						fade.getTarget().getName(),
+						fade.getTarget().getName(),
+						fade.getDuration()
+				));
+			}
+		}
+	}
 
 }
