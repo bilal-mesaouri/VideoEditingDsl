@@ -119,8 +119,10 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(Audio audio) {
+		w(String.format("# Chargement de l'audio : %s\n", audio.getName()));
 		w(String.format("%s_audio = AudioFileClip('%s')\n", audio.getName(), audio.getPath()));
 	}
+
 
 
 	@Override
@@ -141,22 +143,41 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(AdjustVolume adjustVolume) {
-		w(String.format("%s_audio = %s_audio.volumex(%f)\n",
+		w(String.format(Locale.US,
+				"%s_audio = %s_audio.volumex(%f)\n",
 				adjustVolume.getName(),
 				adjustVolume.getTarget().getName(),
-				adjustVolume.getVolumeFactor()));
+				adjustVolume.getVolumeFactor()
+		));
 	}
+
 
 
 	@Override
 	public void visit(AudioTransition audioTransition) {
-		w(String.format(Locale.US,"%s_audio = %s_audio.crossfadeout(%f).crossfadein(%s_audio, %f)\n",
+		// Ajoutez des transitions individuelles avant de les concaténer
+		w(String.format(Locale.US,
+				"%s_audio_faded_out = %s_audio.crossfadeout(%f)\n",
+				audioTransition.getSource().getName(),
+				audioTransition.getSource().getName(),
+				audioTransition.getTransitionDuration()
+		));
+		w(String.format(Locale.US,
+				"%s_audio_faded_in = %s_audio.crossfadein(%f)\n",
+				audioTransition.getTarget().getName(),
+				audioTransition.getTarget().getName(),
+				audioTransition.getTransitionDuration()
+		));
+
+		// Combinez les deux pistes audio avec les transitions
+		w(String.format(Locale.US,
+				"%s_audio = concatenate_audioclips([%s_audio_faded_out, %s_audio_faded_in])\n",
 				audioTransition.getName(),
 				audioTransition.getSource().getName(),
-				audioTransition.getTransitionDuration(),
-				audioTransition.getTarget().getName(),
-				audioTransition.getTransitionDuration()));
+				audioTransition.getTarget().getName()
+		));
 	}
+
 
 
 	@Override
