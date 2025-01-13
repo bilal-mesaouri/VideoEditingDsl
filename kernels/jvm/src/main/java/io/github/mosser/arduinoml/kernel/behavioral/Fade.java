@@ -76,6 +76,17 @@ public class Fade extends UnaryAction {
         if (visitor == null) {
             throw new IllegalArgumentException("Visitor cannot be null");
         }
+
+        // Vérifiez que la durée est définie
+        if (duration <= 0) {
+            throw new IllegalStateException("Fade duration must be greater than 0");
+        }
+        // Vérifiez que le type est valide
+        if (type == null || (!type.equals("IN") && !type.equals("OUT"))) {
+            throw new IllegalStateException("Invalid fade type: must be 'IN' or 'OUT'");
+        }
+
         visitor.visit(this);
     }
+
 }

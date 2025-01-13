@@ -14,7 +14,7 @@ fade "fadeIn2" target clip2 duration 1.0 type "IN"
 textVideo "thanks" content "Thanks for watching!" backgroundColor "black" textColor "white" width 1920 height 1080 duration 15
 
 after "sequence1" firstVideo intro secondVideo commentedClip
-after "sequence2" firstVideo sequence1 secondVideo clip2  // Utilisation de clip2 au lieu de fadeIn2
+after "sequence2" firstVideo sequence1 secondVideo clip2
 after "final" firstVideo sequence2 secondVideo thanks
 
 export "youtubeVideo"

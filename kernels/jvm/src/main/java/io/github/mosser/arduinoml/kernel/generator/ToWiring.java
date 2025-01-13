@@ -71,11 +71,19 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 	@Override
 	public void visit(After after) {
+		// Vérifiez que les vidéos source et cible ont une durée valide
+		if (after.getSource() == null || after.getTarget() == null) {
+			throw new IllegalStateException("Source or target cannot be null for an After operation");
+		}
 
-		w(String.format("%s = concatenate_videoclips([%s, %s]).set_fps(24)\n",after.getName() , after.getSource().getName(), after.getTarget().getName()));
-		return;
-
+		w(String.format(Locale.US,
+				"%s = concatenate_videoclips([%s.resize(height=1080, width=1920).set_fps(24), %s.resize(height=1080, width=1920).set_fps(24)]).set_fps(24)\n",
+				after.getName(),
+				after.getSource().getName(),
+				after.getTarget().getName()
+		));
 	}
+
 
 
 	@Override
@@ -222,39 +230,50 @@ public class ToWiring extends Visitor<StringBuffer> {
 	@Override
 	public void visit(Fade fade) {
 		if (fade.getStack() != null) {
+			// Vérifiez que la pile a une vidéo cible valide
+			if (fade.getStack().getTarget() == null) {
+				throw new IllegalStateException("Stack target cannot be null for a fade operation");
+			}
+
 			if (fade.getType().equals("IN")) {
-				w(String.format(Locale.US, "%s = %s.fx(vfx.fadein(duration=%.1f))\n",
+				w(String.format(Locale.US, "%s = %s.fx(vfx.fadein, %.1f).set_duration(%s.duration).resize(height=1080, width=1920)\n",
 						fade.getTarget().getName(),
 						fade.getTarget().getName(),
-						fade.getDuration()
+						fade.getDuration(),
+						fade.getTarget().getName()
 				));
 			} else {  // "OUT"
-				w(String.format(Locale.US, "%s = %s.fx(vfx.fadeout(duration=%.1f))\n",
+				w(String.format(Locale.US, "%s = %s.fx(vfx.fadeout, %.1f).set_duration(%s.duration).resize(height=1080, width=1920)\n",
 						fade.getTarget().getName(),
 						fade.getTarget().getName(),
-						fade.getDuration()
+						fade.getDuration(),
+						fade.getTarget().getName()
 				));
 			}
 
-			w(String.format(Locale.US, "%s = CompositeVideoClip([%s, %s_resized.set_position((%d, %d))])\n",
+			// Générer le clip composite
+			w(String.format(Locale.US, "%s = CompositeVideoClip([%s, %s_resized.set_position((%d, %d))]).set_duration(%s.duration).set_fps(24)\n",
 					fade.getStack().getName(),
 					fade.getTarget().getName(),
 					fade.getStack().getTarget().getName(),
 					fade.getStack().getCorner().getX(),
-					fade.getStack().getCorner().getY()
+					fade.getStack().getCorner().getY(),
+					fade.getTarget().getName()
 			));
 		} else {
 			if (fade.getType().equals("IN")) {
-				w(String.format(Locale.US, "%s = %s.fx(vfx.fadein(duration=%.1f))\n",
+				w(String.format(Locale.US, "%s = %s.fx(vfx.fadein, %.1f).set_duration(%s.duration).resize(height=1080, width=1920)\n",
 						fade.getTarget().getName(),
 						fade.getTarget().getName(),
-						fade.getDuration()
+						fade.getDuration(),
+						fade.getTarget().getName()
 				));
 			} else {  // "OUT"
-				w(String.format(Locale.US, "%s = %s.fx(vfx.fadeout(duration=%.1f))\n",
+				w(String.format(Locale.US, "%s = %s.fx(vfx.fadeout, %.1f).set_duration(%s.duration).resize(height=1080, width=1920)\n",
 						fade.getTarget().getName(),
 						fade.getTarget().getName(),
-						fade.getDuration()
+						fade.getDuration(),
+						fade.getTarget().getName()
 				));
 			}
 		}
