@@ -441,21 +441,17 @@ public class GroovuinoMLModel {
 	public void reference(String filePath){
 		try {
             this.snippets = extractCodeSnippets(filePath);
-			for (Map.Entry<String, String> entry : snippets.entrySet()) {
-                System.out.println("Snippet ID: " + entry.getKey());
-                System.out.println("Code:");
-                System.out.println(entry.getValue());
-                System.out.println("------------------------");
-            }
+
         } catch (IOException e) {
             System.err.println("Error reading file: " + e.getMessage());
         }
 	}
-	public void load(String name){
+	public void load(String name, List args) {
 		Snippet snippet = new Snippet();
 		snippet.setCode(this.snippets.get(name));
 		System.out.println(this.snippets.get(name));
 		snippet.setName(name);
+		snippet.setArgs(args);
 		this.elements.add(snippet);
 		this.binding.setVariable(name, snippet);
 	}
