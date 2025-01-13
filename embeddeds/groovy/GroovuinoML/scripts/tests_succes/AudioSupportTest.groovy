@@ -1,6 +1,6 @@
-audio "introAudio" path "intro.mp3" duration "5"
-audio "explanation1" path "explanation1.mp3" duration "8"
-audio "explanation2" path "explanation2.mp3" duration "6"
+audio "introAudio" path "intro.wav" duration "5"
+audio "explanation1" path "explanation1.wav" duration "8"
+audio "explanation2" path "explanation2.wav" duration "6"
 
 concatAudio "combinedAudio" firstAudio introAudio secondAudio explanation1
 
