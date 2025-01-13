@@ -4,6 +4,7 @@ import io.github.mosser.arduinoml.kernel.behavioral.Action;
 import io.github.mosser.arduinoml.kernel.generator.Visitable;
 import io.github.mosser.arduinoml.kernel.generator.Visitor;
 import io.github.mosser.arduinoml.kernel.structural.Ressource;
+import io.github.mosser.arduinoml.kernel.structural.Snippet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +12,7 @@ import java.util.List;
 public class App implements NamedElement, Visitable {
 
     private String name;
-    private List<Action> actions = new ArrayList<Action>();
-    private List<Ressource> ressources = new ArrayList<Ressource>();
+    private List<Visitable> elements = new ArrayList<>();
 
     public String getName() {
         return name;
@@ -22,20 +22,12 @@ public class App implements NamedElement, Visitable {
         this.name = name;
     }
 
-    public List<Action> getActions() {
-        return actions;
+    public List<Visitable> getElements() {
+        return elements;
     }
 
-    public void setActions(List<Action> actions) {
-        this.actions = actions;
-    }
-
-    public List<Ressource> getRessources() {
-        return ressources;
-    }
-
-    public void setRessources(List<Ressource> ressources) {
-        this.ressources = ressources;
+    public void setElements(List<Visitable> elements) {
+        this.elements = elements;
     }
 
     @Override

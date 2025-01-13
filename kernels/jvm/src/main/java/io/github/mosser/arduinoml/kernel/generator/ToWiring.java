@@ -28,12 +28,8 @@ public class ToWiring extends Visitor<StringBuffer> {
 		w("from moviepy.editor import VideoFileClip, concatenate_videoclips, TextClip, " +
 				"CompositeVideoClip, ColorClip, vfx\n\n");
 
-		// Visite de toutes les ressources et actions
-		for(Ressource ressource: app.getRessources()) {
-			ressource.accept(this);
-		}
-		for(Action action: app.getActions()) {
-			action.accept(this);
+		for (Visitable e : app.getElements()) {
+			e.accept(this);
 		}
 	}
 
@@ -151,8 +147,8 @@ public class ToWiring extends Visitor<StringBuffer> {
 		w(String.format(Locale.US,
 				"%s = CompositeVideoClip([%s, %s.set_start(%.1f).set_duration(%.1f)]).set_fps(24)\n",  // Ajout du fps
 				superpose.getName(),
-				superpose.getVideo().getName(),
-				superpose.getText().getName(),
+				superpose.getSource().getName(),
+				superpose.getTarget().getName(),
 				superpose.getStartTime(),
 				superpose.getDuration()
 		));
@@ -301,6 +297,13 @@ public class ToWiring extends Visitor<StringBuffer> {
 				));
 			}
 		}
+	public void visit(Snippet snippet) {
+		// TODO Auto-generated method stub
+
+		w(String.format("#start %s\n", snippet.getName()));
+		w(snippet.getCode());
+		w("#end \n");
+
 	}
 
 }
