@@ -15,6 +15,9 @@ public class Superpose extends BinaryAction {
     }
 
     public void setStartTime(float startTime) {
+        if (startTime < 0) {
+            throw new IllegalArgumentException("Start time cannot be negative");
+        }
         this.startTime = startTime;
     }
 
@@ -23,11 +26,23 @@ public class Superpose extends BinaryAction {
     }
 
     public void setDuration(float duration) {
+        // Validate that duration is positive
+        if (duration <= 0) {
+            throw new IllegalArgumentException("Duration must be a positive number");
+        }
         this.duration = duration;
     }
 
     @Override
     public Ressource execute() {
+        // Validate sources before execution
+        validateSources();
+
+        // Ensure start time and duration are within the source video's duration
+        if (startTime + duration > source.getDuration()) {
+            throw new IllegalStateException("Superposition exceeds source video duration");
+        }
+
         // Logique pour superposer le texte sur la vidéo
         Video result = new Video();
         result.setName(this.getName());
@@ -35,8 +50,22 @@ public class Superpose extends BinaryAction {
         return result;
     }
 
+    /**
+     * Validate that both sources (text and video) are present and valid
+     */
+    private void validateSources() {
+        if (source == null) {
+            throw new IllegalStateException("Source video is missing");
+        }
+        if (!(source instanceof Video)) {
+            throw new IllegalArgumentException("Source must be a Video");
+        }
+    }
+
     @Override
     public void accept(Visitor visitor) {
+        // Optional: Add validation before accepting visitor
+        validateSources();
         visitor.visit(this);
     }
 }
