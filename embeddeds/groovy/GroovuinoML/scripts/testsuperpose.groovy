@@ -10,7 +10,7 @@ cut   "clip1a" video clip1 startTime "23" endTime "107"
 
 cut   "clip1b" video clip1 startTime "121" endTime "141"
 
-load "codeSnippet1"
+load "codeSnippet1" args "clip1", "clip1a", "clip1b"
 
 text "s1" content "Mon texte" font "Arial" positionX 100 positionY 200
 

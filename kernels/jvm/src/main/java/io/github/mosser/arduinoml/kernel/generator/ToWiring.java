@@ -21,7 +21,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(App app) {
-		w("# Wiring code generated from an ArduinoML model\n");
+		w("# Wiring code generated from an VideoEditingDsl model\n");
 		w(String.format("# Application name: %s\n", app.getName()) + "\n");
 
 
@@ -298,11 +298,16 @@ public class ToWiring extends Visitor<StringBuffer> {
 			}
 		}
 	}
-
+	
 	public void visit(Snippet snippet) {
 		// TODO Auto-generated method stub
 
 		w(String.format("#start %s\n", snippet.getName()));
+		int i = 1;
+		for (Object arg : snippet.getArgs()) {
+			w(String.format("arg%d = %s\n", i, arg.toString()));
+			i++;
+		}
 		w(snippet.getCode());
 		w("#end \n");
 
