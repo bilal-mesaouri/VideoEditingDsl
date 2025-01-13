@@ -39,10 +39,28 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(Cut cut) {
-		// TODO Auto-generated method stub
-		w(String.format("%s = %s.subclip(%s, %s)", cut.getName(), cut.getTarget().getName(), cut.getStartTime(), cut.getEndTime()));
-		return;
+		if (cut.getTarget() instanceof Video) {
+			w(String.format(Locale.US,
+					"%s = %s.subclip(%f, %f)\n",
+					cut.getName(),
+					cut.getTarget().getName(),
+					cut.getStartTime(),
+					cut.getEndTime()
+			));
+		} else if (cut.getTarget() instanceof Audio) {
+			w(String.format(Locale.US,
+					"%s_audio = %s_audio.subclip(%f, %f)\n",
+					cut.getName(),
+					cut.getTarget().getName(),
+					cut.getStartTime(),
+					cut.getEndTime()
+			));
+		} else {
+			throw new IllegalArgumentException("Cut can only be applied to Audio or Video resources");
+		}
 	}
+
+
 
 	@Override
 	public void visit(Video video) {
@@ -155,21 +173,23 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(AudioTransition audioTransition) {
-		// Ajoutez des transitions individuelles avant de les concaténer
+		// Appliquez fadeout sur la première piste
 		w(String.format(Locale.US,
-				"%s_audio_faded_out = %s_audio.crossfadeout(%f)\n",
+				"%s_audio_faded_out = %s_audio.audio_fadeout(%f)\n",
 				audioTransition.getSource().getName(),
 				audioTransition.getSource().getName(),
 				audioTransition.getTransitionDuration()
 		));
+
+		// Appliquez fadein sur la seconde piste
 		w(String.format(Locale.US,
-				"%s_audio_faded_in = %s_audio.crossfadein(%f)\n",
+				"%s_audio_faded_in = %s_audio.audio_fadein(%f)\n",
 				audioTransition.getTarget().getName(),
 				audioTransition.getTarget().getName(),
 				audioTransition.getTransitionDuration()
 		));
 
-		// Combinez les deux pistes audio avec les transitions
+		// Concaténez les pistes audio après avoir appliqué les transitions
 		w(String.format(Locale.US,
 				"%s_audio = concatenate_audioclips([%s_audio_faded_out, %s_audio_faded_in])\n",
 				audioTransition.getName(),
@@ -177,6 +197,9 @@ public class ToWiring extends Visitor<StringBuffer> {
 				audioTransition.getTarget().getName()
 		));
 	}
+
+
+
 
 
 
