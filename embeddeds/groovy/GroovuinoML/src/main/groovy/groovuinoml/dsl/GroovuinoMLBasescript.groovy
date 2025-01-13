@@ -296,5 +296,11 @@ abstract class GroovuinoMLBasescript extends Script {
 
 
 
+	def reference(String name) {
+		((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().reference(name)
+	}
+	def load(String name) {
+		((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().load(name)
+	}
 }
 

@@ -1,24 +1,34 @@
 package main.groovy.groovuinoml.dsl;
 
 import java.math.BigDecimal;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
 
 import groovy.lang.Binding;
 
 import io.github.mosser.arduinoml.kernel.App;
 import io.github.mosser.arduinoml.kernel.behavioral.*;
-import io.github.mosser.arduinoml.kernel.generator.ToWiring;
-import io.github.mosser.arduinoml.kernel.generator.Visitor;
+import io.github.mosser.arduinoml.kernel.generator.*;
 import io.github.mosser.arduinoml.kernel.structural.*;
 public class GroovuinoMLModel {
-	private List<Ressource> ressources;
-	private List<Action> actions;
+	// private List<Ressource> ressources;
+	// private List<Action> actions;
+	// private List<Snippet> snippetsList;
+	private List<Visitable> elements = new ArrayList<>();
 	private Binding binding;
-
+	private String filePath ="";
+	private Map<String, String> snippets = new HashMap<>();
 	public GroovuinoMLModel(Binding binding) {
-		this.ressources = new ArrayList<Ressource>();
-		this.actions = new ArrayList<Action>();
+		// this.ressources = new ArrayList<Ressource>();
+		// this.actions = new ArrayList<Action>();
+		// this.snippetsList = new ArrayList<Snippet>();
+		this.elements = new ArrayList<Visitable>();
 		this.binding = binding;
 	}
 	public void createTextVideo(String name, String content, String backgroundColor, String textColor,
@@ -33,7 +43,7 @@ public class GroovuinoMLModel {
 		textVideo.setDuration(duration);
 
 		this.binding.setVariable(name, textVideo);
-		this.ressources.add(textVideo);
+		this.elements.add(textVideo);
 	}
 	public void createVideo(String name, String path, float duration) {
 		Video video = new Video();
@@ -41,7 +51,7 @@ public class GroovuinoMLModel {
 		video.setPath(path);
 		video.setDuration(duration);
 		this.binding.setVariable(name, video);
-		this.ressources.add(video);
+		this.elements.add(video);
 	}
 	public void createText(String name, String content, String font, int x, int y) {
 		Text text = new Text();
@@ -51,7 +61,7 @@ public class GroovuinoMLModel {
 		text.setPositionX(x);
 		text.setPositionY(y);
 		this.binding.setVariable(name, text);
-		this.ressources.add(text);
+		this.elements.add(text);
 	}
 	public void createSuperpose(Object video, Object text, float startTime, float duration, String name) {
 		Superpose superpose = new Superpose();
@@ -74,7 +84,7 @@ public class GroovuinoMLModel {
 		superpose.setStartTime(startTime);
 		superpose.setDuration(duration);
 
-		this.actions.add(superpose);
+		this.elements.add(superpose);
 		this.binding.setVariable(name, superpose);
 	}
 	public void createAfter(Object source, Object target, String name) {
@@ -96,7 +106,7 @@ public class GroovuinoMLModel {
 		} else {
 			throw new IllegalArgumentException("Target must be of type Ressource or Action");
 		}
-		this.actions.add(after);
+		this.elements.add(after);
 		this.binding.setVariable(name, after);
 	}
 
@@ -112,7 +122,7 @@ public class GroovuinoMLModel {
 		}
 		cut.setStartTime(startTime);
 		cut.setEndTime(endTime);
-		this.actions.add(cut);
+		this.elements.add(cut);
 		this.binding.setVariable(name, cut);
 		
 	}
@@ -139,7 +149,7 @@ public class GroovuinoMLModel {
 		}
 
 		this.binding.setVariable(name, audio);
-		this.ressources.add(audio);
+		this.elements.add(audio);
 	}
 
 
@@ -170,7 +180,7 @@ public class GroovuinoMLModel {
 			throw new IllegalArgumentException("Video target must be of type Video");
 		}
 
-		this.actions.add(setAudio);
+		this.elements.add(setAudio);
 		this.binding.setVariable(name, setAudio);
 	}
 
@@ -202,7 +212,7 @@ public class GroovuinoMLModel {
 			throw new IllegalArgumentException("Second argument must be of type Audio");
 		}
 
-		this.actions.add(concatAudio);
+		this.elements.add(concatAudio);
 		this.binding.setVariable(name, concatAudio.execute());
 	}
 
@@ -241,7 +251,7 @@ public class GroovuinoMLModel {
 			throw new IllegalArgumentException("Volume factor must be a valid number");
 		}
 
-		this.actions.add(adjustVolume);
+		this.elements.add(adjustVolume);
 		this.binding.setVariable(name, adjustVolume);
 	}
 
@@ -291,7 +301,7 @@ public class GroovuinoMLModel {
 		}
 
 		// Ajoutez l'action
-		this.actions.add(audioTransition);
+		this.elements.add(audioTransition);
 		this.binding.setVariable(name, audioTransition);
 	}
 
@@ -328,7 +338,7 @@ public class GroovuinoMLModel {
 		else
 			throw new IllegalArgumentException("Corner must be one of: TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT");
 
-		this.actions.add(stack);
+		this.elements.add(stack);
 		this.binding.setVariable(name, stack);
 	}
 
@@ -360,7 +370,7 @@ public class GroovuinoMLModel {
 			throw new IllegalArgumentException("Stack must be of type Stack");
 		}
 
-		this.actions.add(fade);
+		this.elements.add(fade);
 		this.binding.setVariable(name, fade);
 	}
 
@@ -368,11 +378,86 @@ public class GroovuinoMLModel {
 	public Object generateCode(String appName) {
 		App app = new App();
 		app.setName(appName);
-		app.setActions(this.actions);
-		app.setRessources(this.ressources);
+		// app.setActions(this.actions);
+		// app.setRessources(this.ressources);
+		// app.setSnippets(this.snippetsList);
+		app.setElements(this.elements);
 		Visitor codeGenerator = new ToWiring();
 		app.accept(codeGenerator);
 
+
 		return codeGenerator.getResult();
 	}
+
+
+	private static final String START_COMMENT_PREFIX = "#start";
+    private static final String END_COMMENT = "#end";
+    
+    public static Map<String, String> extractCodeSnippets(String pythonFilePath) throws IOException {
+        Map<String, String> snippets = new HashMap<>();
+        BufferedReader reader = new BufferedReader(new FileReader(pythonFilePath));
+        
+        String currentLine;
+        String currentSnippetId = null;
+        List<String> currentSnippetLines = new ArrayList<>();
+        boolean isCollectingSnippet = false;
+        
+        while ((currentLine = reader.readLine()) != null) {
+            String trimmedLine = currentLine.trim();
+            
+            // Check for start of snippet
+            if (trimmedLine.startsWith(START_COMMENT_PREFIX)) {
+                isCollectingSnippet = true;
+                currentSnippetId = trimmedLine.substring(START_COMMENT_PREFIX.length()).trim();
+                continue;
+            }
+            
+            // Check for end of snippet
+            if (trimmedLine.equals(END_COMMENT) && isCollectingSnippet) {
+                // Add newline after each line
+                StringBuilder snippetBuilder = new StringBuilder();
+                for (String line : currentSnippetLines) {
+                    snippetBuilder.append(line).append("\n"); // Add newline after each line
+                }
+                snippets.put(currentSnippetId, snippetBuilder.toString());
+                
+                // Reset variables
+                isCollectingSnippet = false;
+                currentSnippetId = null;
+                currentSnippetLines.clear();
+                continue;
+            }
+            
+            // Collect lines between start and end comments
+            if (isCollectingSnippet) {
+                currentSnippetLines.add(currentLine);
+            }
+        }
+        
+        reader.close();
+        return snippets;
+    }
+
+	public void reference(String filePath){
+		try {
+            this.snippets = extractCodeSnippets(filePath);
+			for (Map.Entry<String, String> entry : snippets.entrySet()) {
+                System.out.println("Snippet ID: " + entry.getKey());
+                System.out.println("Code:");
+                System.out.println(entry.getValue());
+                System.out.println("------------------------");
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+	}
+	public void load(String name){
+		Snippet snippet = new Snippet();
+		snippet.setCode(this.snippets.get(name));
+		System.out.println(this.snippets.get(name));
+		snippet.setName(name);
+		this.elements.add(snippet);
+		this.binding.setVariable(name, snippet);
+	}
+
 };

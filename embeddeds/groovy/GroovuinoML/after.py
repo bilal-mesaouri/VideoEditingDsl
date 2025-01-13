@@ -8,6 +8,12 @@ text_intro = TextClip(txt='Holiday in Paris - Summer 2024', font='Arial', color=
 text_intro = text_intro.set_position('center')
 intro = CompositeVideoClip([background_intro, text_intro])
 clip1 = VideoFileClip("video.mp4")
+
+#start codeSnippet1
+print("Mamak")
+#end
+
+
 s1 = TextClip(txt='Mon texte', font='Arial', fontsize=70, color='white')
 s1 = s1.set_position((100, 200))
 s2 = TextClip(txt='not in french', font='Arial', fontsize=70, color='white')
