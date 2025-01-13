@@ -297,6 +297,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				));
 			}
 		}
+	}
 	public void visit(Snippet snippet) {
 		// TODO Auto-generated method stub
 
