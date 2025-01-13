@@ -5,7 +5,7 @@ video "clip2" path "video2.mp4" duration 30
 
 video "bobComment" path "bobcomment.mp4" duration 30
 
-stack "commentedClip" overlay bobComment main clip1 scale 0.3 corner "BOTTOM_RIGHT"
+stack "commentedClip" overlay bobComment main clip1 scale 0.3 corner "BOTTOM_LEFT"
 
 fade "fadeOut1" target clip1 duration 1.0 type "OUT" stack commentedClip
 

@@ -7,9 +7,9 @@ import io.github.mosser.arduinoml.kernel.structural.Video;
 public class Stack extends BinaryAction {
     public enum Corner {
         TOP_LEFT(20, 20),
-        TOP_RIGHT(820, 20),
-        BOTTOM_LEFT(20, 460),
-        BOTTOM_RIGHT(820, 460);
+        TOP_RIGHT(1260, 20),
+        BOTTOM_LEFT(20, 580),
+        BOTTOM_RIGHT(1260, 580);
 
         private final int x;
         private final int y;

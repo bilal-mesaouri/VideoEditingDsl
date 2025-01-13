@@ -71,18 +71,22 @@ public class ToWiring extends Visitor<StringBuffer> {
 	}
 	@Override
 	public void visit(After after) {
-		// Vérifiez que les vidéos source et cible ont une durée valide
+		// Vérifiez la source et la cible
 		if (after.getSource() == null || after.getTarget() == null) {
 			throw new IllegalStateException("Source or target cannot be null for an After operation");
 		}
 
+		// Concaténer en s'assurant des dimensions et fps
 		w(String.format(Locale.US,
-				"%s = concatenate_videoclips([%s.resize(height=1080, width=1920).set_fps(24), %s.resize(height=1080, width=1920).set_fps(24)]).set_fps(24)\n",
+				"%s = concatenate_videoclips([" +
+						"%s.resize(height=1080, width=1920).set_fps(24), " +
+						"%s.resize(height=1080, width=1920).set_fps(24)]).set_fps(24)\n",
 				after.getName(),
 				after.getSource().getName(),
 				after.getTarget().getName()
 		));
 	}
+
 
 
 
@@ -105,31 +109,42 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(TextVideo textVideo) {
-		w(String.format(Locale.US,"background_%s = ColorClip(size=(%d, %d), color='%s', duration=%.1f).set_fps(24)\n",  // Ajout du fps
+		// Générer le fond noir avec les dimensions spécifiées
+		w(String.format(Locale.US,
+				"background_%s = ColorClip(size=(%d, %d), color=(0, 0, 0), duration=%.1f).set_fps(24)\n",
 				textVideo.getName(),
 				textVideo.getWidth(),
 				textVideo.getHeight(),
-				textVideo.getBackgroundColor(),
 				textVideo.getDuration()
 		));
 
-		w(String.format("text_%s = TextClip(txt='%s', font='Arial', color='%s', fontsize=70)\n",
+		// Générer le texte
+		w(String.format(Locale.US,
+				"text_%s = TextClip(txt='%s', font='Arial', color='%s', fontsize=70, size=(%d, %d))\n",
 				textVideo.getName(),
 				textVideo.getContent(),
-				textVideo.getTextColor()
+				textVideo.getTextColor(),
+				textVideo.getWidth(),
+				textVideo.getHeight()
 		));
 
-		w(String.format("text_%s = text_%s.set_position('center')\n",
+		// Positionner le texte
+		w(String.format(Locale.US,
+				"text_%s = text_%s.set_position('center')\n",
 				textVideo.getName(),
 				textVideo.getName()
 		));
 
-		w(String.format("%s = CompositeVideoClip([background_%s, text_%s]).set_fps(24)\n",  // Ajout du fps
+		// Composer le clip final
+		w(String.format(Locale.US,
+				"%s = CompositeVideoClip([background_%s, text_%s]).set_duration(%.1f).set_fps(24)\n",
 				textVideo.getName(),
 				textVideo.getName(),
-				textVideo.getName()
+				textVideo.getName(),
+				textVideo.getDuration()
 		));
 	}
+
 
 	@Override
 	public void visit(Superpose superpose) {
@@ -213,13 +228,21 @@ public class ToWiring extends Visitor<StringBuffer> {
 
 	@Override
 	public void visit(Stack stack) {
-		w(String.format(Locale.ENGLISH, "%s_resized = %s.resize(%.2f)\n",
+		// Vérifiez que la cible a un clip
+		if (stack.getTarget() == null) {
+			throw new IllegalStateException("Target video for stacking cannot be null");
+		}
+
+		// Générer la vidéo empilée avec des dimensions cohérentes
+		w(String.format(Locale.US,
+				"%s_resized = %s.resize(%.2f)\n",
 				stack.getTarget().getName(),
 				stack.getTarget().getName(),
 				stack.getScale()
 		));
 
-		w(String.format(Locale.ENGLISH, "%s = CompositeVideoClip([%s, %s_resized.set_position((%d, %d))]).set_fps(24)\n",  // Ajout du fps
+		w(String.format(Locale.US,
+				"%s = CompositeVideoClip([%s, %s_resized.set_position((%d, %d))]).set_fps(24).resize(height=1080, width=1920)\n",
 				stack.getName(),
 				stack.getSource().getName(),
 				stack.getTarget().getName(),
@@ -227,6 +250,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 				stack.getCorner().getY()
 		));
 	}
+
 	@Override
 	public void visit(Fade fade) {
 		if (fade.getStack() != null) {
