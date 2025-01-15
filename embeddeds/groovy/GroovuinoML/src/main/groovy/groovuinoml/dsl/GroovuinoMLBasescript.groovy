@@ -105,7 +105,7 @@ abstract class GroovuinoMLBasescript extends Script {
 														def mainObject = main instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(main) : (Object)main
 
 														if (scale <= 0) {
-															throw new IllegalArgumentException("Scale must be greater than 0")
+															throw new IllegalArgumentException("Scale  must be greater than 0")
 														}
 
 														((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().createStack(overlayObject, mainObject, scale, corner, name)
