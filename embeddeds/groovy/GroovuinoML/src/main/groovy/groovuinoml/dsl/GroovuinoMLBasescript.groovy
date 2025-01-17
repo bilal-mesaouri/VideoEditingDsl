@@ -142,7 +142,7 @@ abstract class GroovuinoMLBasescript extends Script {
 		}]
 	}
 	// export name
-	def export(String name) {
+	def generate(String name) {
 		println(((GroovuinoMLBinding) this.getBinding()).getGroovuinoMLModel().generateCode(name).toString())
 	}
 
@@ -300,6 +300,26 @@ abstract class GroovuinoMLBasescript extends Script {
 		return [
 			'args': { Object... args ->
 				((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().load(name, args as List)
+			}
+		]
+	}
+
+	def export(String name) {
+		return [
+			'ressource': { target ->
+				[
+					'filepath': {path ->
+						[
+							'fps': {fps ->
+								[
+									'codec': {codec ->
+								targetObject = target instanceof String ? (Object)((GroovuinoMLBinding)this.getBinding()).getVariable(target) : (Object)target
+								((GroovuinoMLBinding)this.getBinding()).getGroovuinoMLModel().export(name, targetObject, path, fps, codec)									}
+								]
+							}
+						]
+					}
+				]
 			}
 		]
 	}

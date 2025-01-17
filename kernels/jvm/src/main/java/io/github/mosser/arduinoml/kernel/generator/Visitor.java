@@ -27,6 +27,7 @@ public abstract class Visitor<T> {
 	public abstract void visit(AudioTransition audioTransition);
 
 	public abstract void visit(Snippet snippet); 
+	public abstract void visit(Export export);
 
 	/***********************
 	 ** Helper mechanisms **

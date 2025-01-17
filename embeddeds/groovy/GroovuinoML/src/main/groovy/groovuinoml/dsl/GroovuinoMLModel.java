@@ -456,4 +456,21 @@ public class GroovuinoMLModel {
 		this.binding.setVariable(name, snippet);
 	}
 
+	public void export(String name, Object target, String filePath, int fps, String codec) {
+		Export export = new Export();
+		export.setName(name);
+		export.setPathString(filePath);
+		export.setFps(fps);
+		export.setCodec(codec);
+		if (target instanceof Ressource) {
+			export.setTarget((Ressource) target);
+		} else if (target instanceof Action) {
+			export.setTarget(((Action) target).execute());
+		} else {
+			throw new IllegalArgumentException("Target must be of type Ressource or Action");
+		}
+		this.elements.add(export);
+		this.binding.setVariable(name, export);
+	}
+
 };

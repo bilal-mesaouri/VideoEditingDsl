@@ -34,7 +34,7 @@ after "result2" firstVideo intro secondVideo result1
 after "result3" firstVideo result2 secondVideo outro
 
 
+export "finalResult" ressource  "result3" filepath "finalResult.mp4" fps 24 codec "libx264"
 
 
-
-export "Test"
+generate "Test"

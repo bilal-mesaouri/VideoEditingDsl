@@ -298,9 +298,17 @@ public class ToWiring extends Visitor<StringBuffer> {
 			}
 		}
 	}
-
+	
+	public void visit(Export export) {
+		w(String.format("final_clip = %s\n", export.getTarget().getName()));
+		w(String.format("final_clip.write_videofile('%s', codec='%s', fps=%d)\n",
+				export.getPathString(),
+				export.getCodec(),
+				export.getFps()
+		));
+	}
+	
 	public void visit(Snippet snippet) {
-		// TODO Auto-generated method stub
 
 		w(String.format("#start %s\n", snippet.getName()));
 		int i = 1;
