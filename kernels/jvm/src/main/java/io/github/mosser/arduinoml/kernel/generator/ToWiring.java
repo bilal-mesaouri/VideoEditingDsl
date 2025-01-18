@@ -313,7 +313,7 @@ public class ToWiring extends Visitor<StringBuffer> {
 		w(String.format("#start %s\n", snippet.getName()));
 		int i = 1;
 		for (Object arg : snippet.getArgs()) {
-			w(String.format("arg%d = %s\n", i, arg.toString()));
+			w(String.format("%sArg%d = %s\n", snippet.getName() , i, arg.toString()));
 			i++;
 		}
 		w(snippet.getCode());

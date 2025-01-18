@@ -449,7 +449,6 @@ public class GroovuinoMLModel {
 	public void load(String name, List args) {
 		Snippet snippet = new Snippet();
 		snippet.setCode(this.snippets.get(name));
-		System.out.println(this.snippets.get(name));
 		snippet.setName(name);
 		snippet.setArgs(args);
 		this.elements.add(snippet);
