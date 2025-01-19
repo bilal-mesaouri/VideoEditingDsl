@@ -18,3 +18,4 @@ after "sequence2" firstVideo sequence1 secondVideo clip2
 after "final" firstVideo sequence2 secondVideo thanks
 
 export "youtubeVideo"
+generate "youtubeVideo"
